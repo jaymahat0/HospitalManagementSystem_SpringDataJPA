@@ -31,20 +31,24 @@ public class Patient {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @ToString.Exclude // It excludes from ToString method.
+    @ToString.Exclude
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Email
+    @ToString.Exclude
     @Column(name = "email", unique = true)
     private String email;
 
+    @ToString.Exclude
     private String gender;
 
     @CreationTimestamp
     @Column(name = "create_at", updatable = false)
+    @ToString.Exclude // It excludes from ToString method.
     private LocalDateTime createdAt;
 
+    @ToString.Exclude
     @Column(name = "blood_group")
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroup;

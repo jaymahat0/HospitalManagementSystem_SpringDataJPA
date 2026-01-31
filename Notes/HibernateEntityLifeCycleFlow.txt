@@ -1,0 +1,165 @@
+
+HIBERNATE ENTITY LIFE CYCLE – NOTES
+=================================
+
+1. What is Hibernate Entity Life Cycle?
+-------------------------------------
+The Hibernate Entity Life Cycle represents different states of an entity object
+from creation to destruction while interacting with the database using Hibernate.
+
+An entity can exist in one of the following states:
+1. Transient
+2. Persistent
+3. Detached
+4. Removed
+
+
+2. Entity Life Cycle States
+--------------------------
+
+1. TRANSIENT STATE
+------------------
+- Object is created using new keyword.
+- Not associated with Hibernate Session.
+- No database record exists.
+- Hibernate does not track this object.
+
+Example:
+Student s = new Student();
+s.setName("Rahul");
+
+Characteristics:
+- No Session
+- No DB row
+- Changes are NOT saved automatically
+
+
+2. PERSISTENT STATE
+-------------------
+- Entity is associated with a Hibernate Session.
+- Corresponds to a row in the database.
+- Hibernate tracks changes (dirty checking).
+- Changes are automatically synchronized with DB.
+
+How entity becomes Persistent:
+- session.save(entity)
+- session.persist(entity)
+- session.get()
+- session.load()
+
+Example:
+session.save(s);
+
+Characteristics:
+- Session attached
+- DB row exists
+- Auto update on commit
+
+
+3. DETACHED STATE
+-----------------
+- Entity was persistent earlier.
+- Session is closed or entity is evicted.
+- Hibernate no longer tracks changes.
+- Database row still exists.
+
+How entity becomes Detached:
+- session.close()
+- session.clear()
+- session.evict(entity)
+
+Example:
+session.close();
+
+Characteristics:
+- No Session
+- DB row exists
+- Changes NOT auto saved
+
+
+4. REMOVED STATE
+----------------
+- Entity is marked for deletion.
+- Will be removed from database on transaction commit.
+
+How entity becomes Removed:
+- session.delete(entity)
+
+Example:
+session.delete(s);
+
+Characteristics:
+- Session attached
+- DB row will be deleted
+
+
+3. ENTITY LIFE CYCLE FLOW
+------------------------
+
+           new Entity()
+                |
+                v
+          [TRANSIENT]
+                |
+       session.save()
+       session.persist()
+                |
+                v
+          [PERSISTENT]
+                |
+     session.close() / evict()
+                |
+                v
+           [DETACHED]
+                |
+        session.merge()
+                |
+                v
+          [PERSISTENT]
+                |
+        session.delete()
+                |
+                v
+           [REMOVED]
+                |
+        transaction.commit()
+                |
+                v
+        Row deleted from DB
+
+
+4. Important Methods and Their Effect
+-------------------------------------
+
+Method              Effect on State
+------------------------------------------------
+save()              Transient -> Persistent
+persist()           Transient -> Persistent
+get()/load()        DB -> Persistent
+merge()             Detached -> Persistent
+update()            Detached -> Persistent
+evict()             Persistent -> Detached
+clear()             Persistent -> Detached
+delete()            Persistent -> Removed
+
+
+5. Hibernate Dirty Checking
+--------------------------
+- Hibernate automatically detects changes in Persistent state.
+- No explicit update() call is required.
+- Update happens at transaction commit.
+
+Example:
+Student s = session.get(Student.class, 1);
+s.setName("Amit");   // Auto update
+
+
+6. Summary (Exam Friendly)
+--------------------------
+- Transient: new object, no DB, no session
+- Persistent: session + DB, auto sync
+- Detached: DB exists, no session
+- Removed: scheduled for deletion
+
+---------------------------------
+END OF NOTES

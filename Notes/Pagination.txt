@@ -1,0 +1,179 @@
+
+SPRING DATA JPA – PAGINATION (NOTES)
+==================================
+
+1. What is Pagination?
+---------------------
+Pagination is the technique of fetching data from the database
+in smaller chunks (pages) instead of loading all records at once.
+
+It is mainly used when:
+- Large amount of data exists
+- Performance and memory efficiency are required
+
+
+2. Why Pagination is Important
+------------------------------
+- Improves application performance
+- Reduces memory consumption
+- Faster response time
+- Avoids loading unnecessary records
+- Essential for large tables
+
+
+3. Pagination in Spring Data JPA
+--------------------------------
+Spring Data JPA provides built-in pagination support using:
+
+- Pageable
+- PageRequest
+- Page
+- Slice
+
+
+4. Pageable Interface
+---------------------
+- Pageable represents pagination information
+- Includes page number, page size, and sorting
+
+Example:
+Pageable pageable = PageRequest.of(0, 5);
+
+Meaning:
+- Page number = 0 (first page)
+- Page size = 5 records
+
+
+5. PageRequest
+--------------
+PageRequest is an implementation of Pageable.
+
+Example:
+PageRequest.of(pageNumber, pageSize);
+PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending());
+
+
+6. Repository Method with Pagination
+------------------------------------
+
+Example:
+Page<Patient> findAll(Pageable pageable);
+
+Custom query:
+Page<Patient> findByBloodGroup(BloodGroupType bloodGroup, Pageable pageable);
+
+
+7. Page Object
+--------------
+Page<T> contains:
+- Content (actual data)
+- Pagination metadata
+
+Common methods:
+- getContent()
+- getTotalElements()
+- getTotalPages()
+- getNumber()
+- getSize()
+- isFirst()
+- isLast()
+
+
+8. Slice Object
+---------------
+Slice<T> is similar to Page<T> but:
+- Does NOT execute count query
+- Faster for large datasets
+
+Use Slice when:
+- Total count is not required
+
+Example:
+Slice<Patient> findByBloodGroup(BloodGroupType bloodGroup, Pageable pageable);
+
+
+9. Page vs Slice
+----------------
+
+Page:
+- Executes count query
+- Provides total pages and total elements
+- Slightly slower
+
+Slice:
+- No count query
+- Faster
+- Cannot tell total pages
+
+
+10. Sorting with Pagination
+---------------------------
+Sorting can be combined with pagination.
+
+Example:
+Pageable pageable =
+    PageRequest.of(0, 5, Sort.by("name").descending());
+
+
+11. Pagination Flow
+-------------------
+
+[Client Request]
+      |
+      v
+[Controller]
+      |
+      v
+[Service]
+      |
+      v
+[Repository + Pageable]
+      |
+      v
+[Database (LIMIT & OFFSET)]
+      |
+      v
+[Page / Slice Result]
+
+
+12. Database Level Pagination
+-----------------------------
+Spring Data JPA converts pagination to SQL:
+
+MySQL:
+LIMIT pageSize OFFSET pageNumber * pageSize
+
+PostgreSQL:
+LIMIT pageSize OFFSET pageNumber * pageSize
+
+
+13. Common Mistakes
+------------------
+- Page number starts from 0, not 1
+- Using Page when Slice is sufficient
+- Forgetting Pageable in repository method
+- Large page size causing performance issues
+
+
+14. When NOT to Use Pagination
+------------------------------
+- Very small datasets
+- When full dataset is always required
+
+
+15. Interview Key Points
+------------------------
+- Pagination improves performance
+- Pageable controls page number and size
+- Page includes total count, Slice does not
+- Page index starts from 0
+- Pagination uses LIMIT and OFFSET
+
+
+16. Summary
+-----------
+Pagination in Spring Data JPA helps handle large datasets efficiently
+by loading data in pages, improving performance and scalability.
+
+--------------------------------
+END OF NOTES

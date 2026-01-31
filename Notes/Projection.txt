@@ -1,0 +1,152 @@
+
+SPRING DATA JPA – PROJECTION (NOTES)
+==================================
+
+1. Definition of Projection
+--------------------------
+Projection in Spring Data JPA means fetching only selected fields (columns)
+from an entity instead of fetching the complete entity.
+
+In simple words:
+"Projection allows you to retrieve only the required data from the database."
+
+
+2. Why Projection is Used
+------------------------
+- Improves performance by reducing data transfer
+- Saves memory
+- Faster query execution
+- Avoids exposing unnecessary entity fields
+- Useful for read-only operations and APIs
+
+
+3. Projection vs Entity Fetch
+-----------------------------
+
+Entity Fetch:
+- Fetches all columns of the table
+- Maps to full entity object
+- Heavier and slower
+
+Projection Fetch:
+- Fetches only selected columns
+- Maps to interface or DTO
+- Lightweight and faster
+
+
+4. Types of Projections in Spring Data JPA
+------------------------------------------
+
+1) Interface-Based Projection
+-----------------------------
+- Uses Java interface
+- Method names match entity field names
+- Spring automatically creates implementation
+
+Example:
+public interface PatientView {
+    String getName();
+    BloodGroupType getBloodGroup();
+}
+
+Repository:
+List<PatientView> findByBloodGroup(BloodGroupType bloodGroup);
+
+Advantages:
+- No DTO class required
+- Simple and clean
+- Recommended for simple read operations
+
+
+2) Class-Based Projection (DTO Projection)
+------------------------------------------
+- Uses custom DTO class
+- Requires constructor matching JPQL query
+
+Example DTO:
+public class PatientDTO {
+    private String name;
+    private BloodGroupType bloodGroup;
+
+    public PatientDTO(String name, BloodGroupType bloodGroup) {
+        this.name = name;
+        this.bloodGroup = bloodGroup;
+    }
+}
+
+JPQL:
+SELECT new com.example.PatientDTO(p.name, p.bloodGroup)
+FROM Patient p
+
+Advantages:
+- More control
+- Suitable for complex queries and aggregations
+- Strongly typed result
+
+
+3) Open Projection
+------------------
+- Uses SpEL expressions
+- Allows calculated or derived fields
+
+Example:
+@Value("#{target.name + ' - ' + target.bloodGroup}")
+String getDisplayName();
+
+Note:
+- Slightly slower than closed projection
+- Useful for formatted or derived values
+
+
+4. Closed vs Open Projection
+----------------------------
+
+Closed Projection:
+- Uses only entity fields
+- Faster
+- No extra computation
+
+Open Projection:
+- Uses expressions (@Value)
+- Flexible
+- Slight performance overhead
+
+
+5. Projection with Aggregation
+------------------------------
+Projection is commonly used with:
+- COUNT()
+- SUM()
+- AVG()
+- GROUP BY
+
+Example:
+SELECT new BloodGroupCountDTO(p.bloodGroup, COUNT(p.id))
+FROM Patient p
+GROUP BY p.bloodGroup
+
+
+6. When NOT to Use Projection
+-----------------------------
+- When entity updates are required
+- When lazy-loaded relationships are needed
+- When full entity lifecycle management is required
+
+
+7. Key Interview Points
+----------------------
+- Projection fetches partial data, not full entity
+- Improves performance and reduces memory usage
+- Interface-based projection is simplest
+- DTO projection is best for complex queries
+- Aggregate functions return wrapper types (Long, Double)
+
+
+8. Summary
+----------
+Projection is a powerful feature of Spring Data JPA that allows retrieving
+only required data from the database, making applications more efficient
+and scalable.
+
+--------------------------------
+END OF NOTES
