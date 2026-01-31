@@ -1,4 +1,4 @@
-package com.mahato.HospitalManagementSystem.type;
+package com.mahato.HospitalManagementSystem.entity.type;
 
 public enum BloodGroupType {
     A_POSITIVE,

@@ -3,7 +3,7 @@ package com.mahato.HospitalManagementSystem.service;
 import com.mahato.HospitalManagementSystem.dto.BloodGroupTypeResponseEntity;
 import com.mahato.HospitalManagementSystem.entity.Patient;
 import com.mahato.HospitalManagementSystem.repository.PatientRepository;
-import com.mahato.HospitalManagementSystem.type.BloodGroupType;
+import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +61,7 @@ public class PatientService {
         return patientRepository.countNumberOfPatientsFromDifferentBloodGroupWithoutUsingObjectArray();
     }
 
-    public Page<Patient> getAllUsingPagination(Pageable pageable) {
-        return patientRepository.getAllPatientsByNativeQueryPaginated(pageable);
+    public List<Patient> getAllUsingPagination(Pageable pageable) {
+        return patientRepository.getAllPatientsByNativeQueryPaginated(pageable).getContent();
     }
 }

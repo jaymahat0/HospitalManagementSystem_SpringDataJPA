@@ -2,7 +2,7 @@ package com.mahato.HospitalManagementSystem.repository;
 
 import com.mahato.HospitalManagementSystem.dto.BloodGroupTypeResponseEntity;
 import com.mahato.HospitalManagementSystem.entity.Patient;
-import com.mahato.HospitalManagementSystem.type.BloodGroupType;
+import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

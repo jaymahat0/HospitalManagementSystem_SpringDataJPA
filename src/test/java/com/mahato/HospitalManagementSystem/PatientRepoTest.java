@@ -4,7 +4,7 @@ import com.mahato.HospitalManagementSystem.dto.BloodGroupTypeResponseEntity;
 import com.mahato.HospitalManagementSystem.entity.Patient;
 import com.mahato.HospitalManagementSystem.repository.PatientRepository;
 import com.mahato.HospitalManagementSystem.service.PatientService;
-import com.mahato.HospitalManagementSystem.type.BloodGroupType;
+import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -106,7 +106,7 @@ public class PatientRepoTest {
 
     @Test
     public void getPatientUsingPagination() {
-        Page<Patient> patients = patientService.getAllUsingPagination(PageRequest.of(0,2, Sort.by("name")));
+        List<Patient> patients = patientService.getAllUsingPagination(PageRequest.of(1,2, Sort.by("name")));
         for(Patient patient : patients) {
             System.out.println(patient);
         }

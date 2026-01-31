@@ -1,6 +1,6 @@
 package com.mahato.HospitalManagementSystem.entity;
 
-import com.mahato.HospitalManagementSystem.type.BloodGroupType;
+import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
