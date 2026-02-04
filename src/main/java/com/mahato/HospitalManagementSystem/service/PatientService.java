@@ -5,7 +5,6 @@ import com.mahato.HospitalManagementSystem.entity.Patient;
 import com.mahato.HospitalManagementSystem.repository.PatientRepository;
 import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,5 +62,11 @@ public class PatientService {
 
     public List<Patient> getAllUsingPagination(Pageable pageable) {
         return patientRepository.getAllPatientsByNativeQueryPaginated(pageable).getContent();
+    }
+
+    public Patient removePatientById(Long id) {
+        Patient patient = patientRepository.findById(id).orElseThrow();
+        patientRepository.deleteById(id);
+        return patient;
     }
 }

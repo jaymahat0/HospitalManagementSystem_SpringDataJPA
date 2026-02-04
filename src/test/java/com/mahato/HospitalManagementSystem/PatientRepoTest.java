@@ -8,7 +8,6 @@ import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -110,5 +109,12 @@ public class PatientRepoTest {
         for(Patient patient : patients) {
             System.out.println(patient);
         }
+    }
+
+    //===========================Remove Patient================================
+    @Test
+    public void deletePatientById() {
+        Patient patient = patientService.removePatientById(3L);
+        System.out.println(patient);
     }
 }

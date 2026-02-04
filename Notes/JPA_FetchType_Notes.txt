@@ -1,0 +1,96 @@
+JPA FetchType — Notes
+
+1. What is FetchType?
+FetchType in JPA defines WHEN related entities are loaded from the database.
+It controls whether associated data is fetched immediately or only when accessed.
+
+There are two main types:
+- FetchType.EAGER
+- FetchType.LAZY
+
+2. FetchType.EAGER
+Meaning:
+Related entities are loaded immediately along with the parent entity in the same query (or additional queries).
+
+Example:
+@ManyToOne(fetch = FetchType.EAGER)
+private Doctor doctor;
+
+Behavior:
+- When you load Appointment, Doctor is also loaded immediately.
+- Data is available even outside a transaction.
+- Can cause performance issues if relationships are large or deep.
+
+Pros:
+- Simple to use
+- No LazyInitializationException
+
+Cons:
+- Loads more data than needed
+- Can cause N+1 query problem
+- Slower for large object graphs
+
+3. FetchType.LAZY
+Meaning:
+Related entities are loaded only when you actually access them.
+
+Example:
+@OneToMany(fetch = FetchType.LAZY)
+private List<Appointment> appointments;
+
+Behavior:
+- When you load Patient, appointments are NOT loaded immediately.
+- When you call patient.getAppointments(), Hibernate fetches them from DB.
+- Requires an active Hibernate session (usually inside @Transactional).
+
+Pros:
+- Better performance
+- Loads only what you need
+- Scales better for large relationships
+
+Cons:
+- Can throw LazyInitializationException if accessed outside transaction
+- Needs proper service-layer transaction management
+
+4. Default Fetch Types in JPA
+
+Relationship Type    Default FetchType
+@ManyToOne          EAGER
+@OneToOne           EAGER
+@OneToMany          LAZY
+@ManyToMany         LAZY
+
+5. LazyInitializationException (Important)
+
+Error:
+failed to lazily initialize a collection - no Session
+
+Cause:
+- You accessed a LAZY relationship outside a transaction or after session closed.
+
+Solution:
+- Access lazy fields inside @Transactional method
+- Or use fetch join in query
+- Or change to EAGER (not recommended for large data)
+
+6. Best Practices
+
+- Prefer FetchType.LAZY for collections (@OneToMany, @ManyToMany)
+- Use EAGER only when data is ALWAYS required
+- Control fetching using JPQL fetch joins when needed
+- Always handle lazy loading inside service layer with @Transactional
+
+7. Example with Fetch Join
+
+@Query("SELECT p FROM Patient p JOIN FETCH p.appointments WHERE p.id = :id")
+Patient findPatientWithAppointments(@Param("id") Long id);
+
+This loads Patient and appointments in one query safely.
+
+8. Interview One-Liners
+
+- FetchType defines when related entities are loaded
+- EAGER loads immediately, LAZY loads on demand
+- LAZY is better for performance
+- LazyInitializationException happens when accessing LAZY data outside session
+- Use fetch join or @Transactional to handle LAZY safely

@@ -1,0 +1,48 @@
+JPA Cascading & orphanRemoval — Notes
+
+1. Cascading in JPA
+Cascading tells JPA/Hibernate which operations on a parent entity should automatically propagate to its related child entities.
+
+2. Cascade Types
+CascadeType.PERSIST  : Save child when parent is saved
+CascadeType.MERGE    : Update child when parent is updated
+CascadeType.REMOVE   : Delete child when parent is deleted
+CascadeType.REFRESH  : Refresh child when parent is refreshed
+CascadeType.DETACH   : Detach child when parent is detached
+CascadeType.ALL      : Applies all cascade operations
+
+3. orphanRemoval
+orphanRemoval = true automatically deletes child entities when they are no longer referenced by the parent.
+
+4. When orphanRemoval Triggers
+@OneToMany:
+- Removing entity from collection
+- Clearing the collection
+- Replacing the collection
+
+@OneToOne:
+- Setting reference to null
+- Replacing reference with another entity
+
+5. orphanRemoval vs CascadeType.REMOVE
+CascadeType.REMOVE deletes child only when parent is deleted.
+orphanRemoval deletes child when it becomes unreferenced even if parent still exists.
+
+6. Example
+@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+
+7. When to Use orphanRemoval
+Use when child has no meaning without parent:
+- Appointment without Patient
+- Insurance without Patient
+
+8. Key Rules
+- Works only on owning side
+- Happens during flush/commit
+- Always use inside transactions
+- Avoid CascadeType.ALL blindly
+
+Interview One-Liners
+- Cascading propagates operations
+- orphanRemoval manages lifecycle
+- CascadeType.REMOVE is not orphanRemoval

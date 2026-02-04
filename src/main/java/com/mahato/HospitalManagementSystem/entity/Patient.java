@@ -3,14 +3,18 @@ package com.mahato.HospitalManagementSystem.entity;
 import com.mahato.HospitalManagementSystem.entity.type.BloodGroupType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(
         name="patient",
@@ -52,4 +56,14 @@ public class Patient {
     @Column(name = "blood_group")
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroup;
+
+    @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST},orphanRemoval = true)
+    @JoinColumn(name = "insurance_id") //Owning Side
+    private Insurance insurance;
+
+    @OneToMany(mappedBy = "patient",cascade = {CascadeType.REMOVE})
+    @ToString.Exclude //Inverse Side
+    private List<Appointment> appointments = new ArrayList<>();
+
+
 }

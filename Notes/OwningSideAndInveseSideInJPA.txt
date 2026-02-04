@@ -1,0 +1,62 @@
+OWNING SIDE AND INVERSE SIDE IN JPA
+=================================
+
+1. INTRODUCTION
+---------------
+In JPA relationships (OneToOne, OneToMany, ManyToMany), Hibernate needs to know which entity controls the relationship.
+This control is defined using Owning Side and Inverse Side.
+
+Only the Owning Side is responsible for:
+- Creating the foreign key
+- Updating the relationship in the database
+
+2. OWNING SIDE
+--------------
+The Owning Side is the entity that:
+- Contains the foreign key column
+- Uses @JoinColumn
+- Controls INSERT and UPDATE operations
+
+Key points:
+- Only one owning side exists per relationship
+- Hibernate reads relationship changes only from the owning side
+- Changes made only on the inverse side are ignored
+
+Example:
+@OneToOne
+@JoinColumn(name = "profile_id")
+private Profile profile;
+
+3. INVERSE SIDE
+---------------
+The Inverse Side (non-owning side):
+- Does NOT contain the foreign key
+- Uses mappedBy
+- Depends on the owning side for database updates
+
+Example:
+@OneToOne(mappedBy = "profile")
+private User user;
+
+4. ROLE OF mappedBy
+-------------------
+mappedBy tells Hibernate that this side does not own the relationship.
+It refers to the variable name in the owning entity.
+
+5. IMPORTANT RULES
+------------------
+1. Foreign key is created only by the owning side
+2. @JoinColumn appears only on the owning side
+3. mappedBy appears only on the inverse side
+4. Hibernate ignores changes made only on inverse side
+5. Every bidirectional relationship has exactly one owning side
+
+6. COMMON MISTAKES
+------------------
+- Using @JoinColumn on both sides
+- Forgetting mappedBy
+- Updating only inverse side
+
+7. EXAM ONE-LINER
+-----------------
+The owning side maintains the foreign key and controls persistence, while the inverse side uses mappedBy and depends on the owning side.
